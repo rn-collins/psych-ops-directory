@@ -3,10 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Psych Ops Directory — curated operational infrastructure for the psychedelic ecosystem. Vetted legal, financial, clinical, and support vendors across 22 categories.">
+<meta property="og:title" content="Psych Ops Directory — Operational Infrastructure for the Psychedelic Ecosystem">
+<meta property="og:description" content="Curated directory of vetted vendors and organizations serving the psychedelic ecosystem — legal, banking, CROs, facilitator training, harm reduction, and more.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://psych-ops-directory.vercel.app/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Psych Ops Directory">
+<meta name="twitter:description" content="Curated operational infrastructure for the psychedelic ecosystem — legal, financial, clinical, and support vendors.">
+<link rel="canonical" href="https://psych-ops-directory.vercel.app/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>">
 <title>Psych Ops Directory — Operational Infrastructure for the Psychedelic Ecosystem</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Syne:wght@500;600;700&family=Manrope:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Syne:wght@500;600;700&family=Manrope:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap&font-display=swap" rel="stylesheet">
 <style>
 :root{
   --teal:#1B7A68; --teal-d:#145C4F; --teal-l:#E8F4F1;
@@ -184,15 +194,16 @@ footer{background:var(--ink);border-top:1px solid #2E4A3E;padding:1.5rem 2rem}
 .analytics-inner{max-width:1200px;margin:0 auto;display:flex;gap:2rem;flex-wrap:wrap}
 .analytics-item{font-family:'DM Mono',monospace;font-size:.65rem;color:#3D6055;letter-spacing:.05em}
 .analytics-item span{color:#5DBFA0}
-</style>
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}</style>
 </head>
 <body>
 
-<header class="site-header">
+<a href="#main-content" class="skip-link" style="position:absolute;top:-40px;left:0;background:var(--teal);color:#fff;padding:.5rem 1rem;z-index:9999;border-radius:0 0 4px 0;font-family:'DM Mono',monospace;font-size:.75rem;transition:top .15s" onfocus="this.style.top='0'" onblur="this.style.top='-40px'">Skip to content</a>
+<header class="site-header" role="banner">
   <div class="header-inner">
     <div class="brand">
       <div class="brand-eyebrow">Aloha AI Consulting · Operational Intelligence</div>
-      <div class="brand-name">PSYCH OPS</div>
+      <h1 class="brand-name">PSYCH OPS</h1>
       <div class="brand-sub">Operational Infrastructure Directory · Psychedelic Ecosystem · v5 June 2026</div>
     </div>
     <div class="header-stats">
@@ -212,18 +223,18 @@ footer{background:var(--ink);border-top:1px solid #2E4A3E;padding:1.5rem 2rem}
   </div>
 </div>
 
-<div class="search-wrap">
+<div class="search-wrap" role="search">
   <div class="search-inner">
-    <input class="search-input" id="q" type="text" placeholder="Search by name, service, specialty, location…" oninput="runSearch()" onkeydown="if(event.key==='Enter')runSearch()">
-    <button class="search-btn" onclick="runSearch()">Search</button>
-    <button class="act-btn" id="compare-toggle" onclick="toggleCompareMode()">Compare</button>
-    <button class="act-btn" onclick="exportCSV()">Export CSV</button>
-    <button class="act-btn" onclick="openModal('submit-modal')">Submit Listing</button>
-    <button class="clear-btn" onclick="clearSearch()">Clear</button>
+    <input class="search-input" id="q" type="text" aria-label="Search directory" placeholder="Search by name, service, specialty, location…" oninput="runSearch()" onkeydown="if(event.key==='Enter')runSearch()">
+    <button class="search-btn" onclick="runSearch()" aria-label="Run search">Search</button>
+    <button class="act-btn" id="compare-toggle" onclick="toggleCompareMode()" aria-label="Toggle compare mode">Compare</button>
+    <button class="act-btn" onclick="exportCSV()" aria-label="Export current results as CSV">Export CSV</button>
+    <button class="act-btn" onclick="openModal('submit-modal')" aria-label="Submit a new listing for review">Submit Listing</button>
+    <button class="clear-btn" onclick="clearSearch()" aria-label="Clear search">Clear</button>
   </div>
 </div>
 
-<nav>
+<nav aria-label="Category filter">
   <div class="cat-nav">
     <div class="cat-inner" id="cat-inner"></div>
   </div>
@@ -234,13 +245,13 @@ footer{background:var(--ink);border-top:1px solid #2E4A3E;padding:1.5rem 2rem}
   <div class="examples" id="examples"></div>
 </div>
 
-<main>
+<main id="main-content" role="main">
   <div class="legend">
     <div class="leg"><div class="leg-dot t1"></div>Tier 1 — verified named psychedelic relationship</div>
     <div class="leg"><div class="leg-dot t2"></div>Tier 2 — verifiable field presence</div>
     <div class="leg"><div class="leg-dot t3"></div>Tier 3 — candidate / verify independently</div>
   </div>
-  <div class="results-meta" id="results-meta"></div>
+  <h2 class="sr-only">Directory listings</h2><div class="results-meta" id="results-meta" aria-live="polite" aria-atomic="true"></div>
   <div class="grid" id="grid"></div>
 </main>
 
@@ -266,7 +277,7 @@ footer{background:var(--ink);border-top:1px solid #2E4A3E;padding:1.5rem 2rem}
 <!-- Compare Modal -->
 <div class="modal-overlay" id="compare-modal">
   <div class="modal">
-    <div class="modal-head"><div class="modal-title">Side-by-Side Comparison</div><button class="modal-close" onclick="closeModal('compare-modal')">✕</button></div>
+    <div class="modal-head"><div class="modal-title">Side-by-Side Comparison</div><button class="modal-close" onclick="closeModal('compare-modal')" aria-label="Close comparison modal">✕</button></div>
     <div class="modal-body"><div class="compare-grid" id="compare-grid"></div></div>
   </div>
 </div>
@@ -274,7 +285,7 @@ footer{background:var(--ink);border-top:1px solid #2E4A3E;padding:1.5rem 2rem}
 <!-- Submit Modal -->
 <div class="modal-overlay" id="submit-modal">
   <div class="modal">
-    <div class="modal-head"><div class="modal-title">Submit a Listing</div><button class="modal-close" onclick="closeModal('submit-modal')">✕</button></div>
+    <div class="modal-head"><div class="modal-title">Submit a Listing</div><button class="modal-close" onclick="closeModal('submit-modal')" aria-label="Close submit listing modal">✕</button></div>
     <div class="modal-body">
       <p style="font-size:.82rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.6">Submit a vendor, organization, or resource for editorial review. All submissions are reviewed by RN Collins before appearing in the directory.</p>
       <div class="field"><label for="sub-name">Organization Name *</label><input type="text" id="sub-name" placeholder="e.g. Acme Psychedelic Law Group"></div>
@@ -320,7 +331,7 @@ footer{background:var(--ink);border-top:1px solid #2E4A3E;padding:1.5rem 2rem}
         <div class="detail-name" id="detail-name"></div>
         <div class="detail-sub" id="detail-sub"></div>
       </div>
-      <button class="detail-close" onclick="closeDetail()">✕ Close</button>
+      <button class="detail-close" onclick="closeDetail()" aria-label="Close detail view">✕ Close</button>
     </div>
     <div class="detail-badges" id="detail-badges"></div>
     <div class="detail-body">
@@ -344,7 +355,7 @@ footer{background:var(--ink);border-top:1px solid #2E4A3E;padding:1.5rem 2rem}
 <!-- Flag Modal -->
 <div class="modal-overlay" id="flag-modal">
   <div class="modal" style="max-width:480px">
-    <div class="modal-head"><div class="modal-title">Flag Listing</div><button class="modal-close" onclick="closeModal('flag-modal')">✕</button></div>
+    <div class="modal-head"><div class="modal-title">Flag Listing</div><button class="modal-close" onclick="closeModal('flag-modal')" aria-label="Close flag modal">✕</button></div>
     <div class="modal-body">
       <p style="font-size:.82rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.6">Flag this listing as outdated, inaccurate, or problematic. The editor will review and update or remove it.</p>
       <div id="flag-listing-name" style="font-family:'DM Mono',monospace;font-size:.75rem;color:var(--ink);margin-bottom:1rem;padding:.5rem .75rem;background:var(--bg);border-radius:4px;border:1px solid var(--border)"></div>
@@ -356,12 +367,12 @@ footer{background:var(--ink);border-top:1px solid #2E4A3E;padding:1.5rem 2rem}
   </div>
 </div>
 
-<footer>
+<footer role="contentinfo">
   <div class="footer-inner">
     <div class="footer-brand">Psych Ops Directory · Aloha AI Consulting · Honolulu, HI</div>
     <div class="footer-links">
       <a href="https://rncollins.com/aloha-ai-consulting" class="footer-link" target="_blank">rncollins.com</a>
-      <a href="mailto:collins.ra@northeastern.edu" class="footer-link">collins.ra@northeastern.edu</a>
+      <a href="mailto:collins.ra@husky.neu.edu" class="footer-link">collins.ra@husky.neu.edu</a>
       <a href="https://linkedin.com/in/rn-collins" class="footer-link" target="_blank">LinkedIn</a>
     </div>
     <div class="footer-credit">Curated by RN Collins · Editor · v5 June 2026</div>
@@ -519,7 +530,7 @@ function closeDetail(){
 }
 
 function contactArch(){
-  const email="collins.ra@northeastern.edu";
+  const email="collins.ra@husky.neu.edu";
   try{navigator.clipboard.writeText(email)}catch(e){}
   window.open("mailto:"+email+"?subject=Psych Ops Directory — Inquiry","_blank");
   const msg=document.getElementById("confirm-msg");
@@ -608,7 +619,7 @@ async function submitFlag(){
     const r=await fetch("/api/flag",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({listingId:currentFlagId,listingName:currentFlagName,reason,contact})});
     if(r.ok){msg.textContent="Flag submitted. The editor will review.";msg.className="form-msg ok";btn.textContent="Submitted ✓";}
     else throw new Error();
-  }catch{msg.textContent="Error. Email collins.ra@northeastern.edu directly.";msg.className="form-msg err";btn.disabled=false;btn.textContent="Submit Flag";}
+  }catch{msg.textContent="Error. Email collins.ra@husky.neu.edu directly.";msg.className="form-msg err";btn.disabled=false;btn.textContent="Submit Flag";}
 }
 
 async function submitListing(){
@@ -629,7 +640,7 @@ async function submitListing(){
     const r=await fetch("/api/submit",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
     if(r.ok){msg.textContent="Submitted! The editor will review.";msg.className="form-msg ok";btn.textContent="Submitted ✓";}
     else throw new Error();
-  }catch{msg.textContent="Error. Email collins.ra@northeastern.edu directly.";msg.className="form-msg err";btn.disabled=false;btn.textContent="Submit for Review";}
+  }catch{msg.textContent="Error. Email collins.ra@husky.neu.edu directly.";msg.className="form-msg err";btn.disabled=false;btn.textContent="Submit for Review";}
 }
 
 document.addEventListener("click",e=>{if(e.target.classList.contains("modal-overlay"))e.target.classList.remove("open");});
@@ -638,7 +649,7 @@ document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;document.quer
 function openModal(id){var el=document.getElementById(id);if(el)el.classList.add("open");}
 function closeModal(id){var el=document.getElementById(id);if(el)el.classList.remove("open");}
 
-buildNav();buildExamples();render();loadAnalytics();
+buildNav();buildExamples();render();loadAnalytics();track("view","");
 </script>
 </body>
 </html>

@@ -166,8 +166,8 @@ function populateDashboard(d){
 
   const subEl = document.getElementById("submissions-list");
   const pending = (d.submissions||[]).filter(s=>s.status==="pending");
-  if(pending.length===0){subEl.innerHTML='<div class="empty-state">No pending submissions.</div>';return;}
-  subEl.innerHTML = pending.map(s=>`
+  if(pending.length===0){subEl.innerHTML='<div class="empty-state">No pending submissions.</div>';}
+  else{subEl.innerHTML = pending.map(s=>`
     <div class="item">
       <div class="item-name">${s.name}</div>
       <div class="item-meta">${s.cat} · Submitted ${new Date(s.submittedAt).toLocaleDateString()} · ${s.contact||"No contact"}</div>
@@ -176,7 +176,7 @@ function populateDashboard(d){
         <button class="ia-btn approve" onclick="approveSubmission('${s.id}')">Approve</button>
         <button class="ia-btn reject" onclick="rejectSubmission('${s.id}')">Reject</button>
       </div>
-    </div>`).join("");
+    </div>`).join("");}
 
   const flagEl = document.getElementById("flags-list");
   const flags = d.flags||[];
