@@ -171,8 +171,7 @@ footer{background:var(--ink);border-top:1px solid #2E4A3E;padding:1.5rem 2rem}
 </main>
 
 <div class="contact-fab">
-  <div class="contact-confirm" id="confirm-msg">✓ Email copied to clipboard</div>
-  <button class="contact-btn" onclick="contactArch()">
+  <button class="contact-btn" onclick="document.getElementById('ca-modal-psych-op').style.display='flex'">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
     Contact the Architect
   </button>
@@ -183,7 +182,7 @@ footer{background:var(--ink);border-top:1px solid #2E4A3E;padding:1.5rem 2rem}
     <div class="footer-brand">Psych Ops Directory · Aloha AI Consulting · Honolulu, HI</div>
     <div class="footer-links">
       <a href="https://rncollins.com/aloha-ai-consulting" class="footer-link" target="_blank">rncollins.com</a>
-      <a href="mailto:collins.ra@northeastern.edu" class="footer-link">collins.ra@northeastern.edu</a>
+      <button type="button" class="footer-link" onclick="document.getElementById('ca-modal-psych-op').style.display='flex'" style="background:none;border:none;padding:0;font:inherit;cursor:pointer">Contact</button>
       <a href="https://linkedin.com/in/rn-collins" class="footer-link" target="_blank">LinkedIn</a>
     </div>
     <div class="footer-credit">Curated by RN Collins · Editor · v5 June 2026</div>
@@ -483,15 +482,6 @@ function render(){
       </div>
     </div>`;
   }).join("");
-}
-
-function contactArch(){
-  const email="collins.ra@northeastern.edu";
-  try{navigator.clipboard.writeText(email)}catch(e){}
-  window.open("mailto:"+email+"?subject=Psych Ops Directory — Inquiry","_blank");
-  const msg=document.getElementById("confirm-msg");
-  msg.style.display="block";
-  setTimeout(()=>{msg.style.display="none"},2500);
 }
 
 init();
