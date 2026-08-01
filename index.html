@@ -123,6 +123,15 @@ footer{background:var(--ink);border-top:1px solid #2E4A3E;padding:1.5rem 2rem}
 <script defer src="/_vercel/speed-insights/script.js"></script>
 <script>(function(){var p=new URLSearchParams(location.search),u={};['utm_source','utm_medium','utm_campaign','utm_content','utm_term'].forEach(function(k){if(p.get(k))u[k]=p.get(k);});if(Object.keys(u).length)sessionStorage.setItem('rn_utm',JSON.stringify(u));window._getUTM=function(){try{return JSON.parse(sessionStorage.getItem('rn_utm')||'{}')}catch(e){return{}}};window.addEventListener('load',function(){fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event:'page_view',source:'psych-ops-directory',referrer:document.referrer||'direct',utm:window._getUTM()})}).catch(function(){});}); var ms=[25,50,75,90],fired={};window.addEventListener('scroll',function(){var h=document.body.scrollHeight-window.innerHeight;if(h<=0)return;var pct=Math.round((window.scrollY/h)*100);ms.forEach(function(m){if(pct>=m&&!fired[m]){fired[m]=1;fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event:'scroll_depth',source:'psych-ops-directory',depth:m+'%'})}).catch(function(){});}});},{passive:true});})()</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Person", "@id": "https://rn-portfolio-khaki.vercel.app/#rn-collins", "name": "RN Collins", "jobTitle": "AI Educator & Consultant", "url": "https://rn-portfolio-khaki.vercel.app", "sameAs": ["https://linkedin.com/in/rn-collins"]}, {"@type": "WebPage", "name": "Psych Ops Directory \u2014 RN Collins", "url": "https://psych-ops-directory.vercel.app", "author": {"@id": "https://rn-portfolio-khaki.vercel.app/#rn-collins"}}]}</script>
+
+<style>
+@media (max-width:480px){
+  div[style*="position:fixed"][style*="bottom:1.5rem"][style*="right:1.5rem"]{bottom:0.75rem!important;right:0.75rem!important}
+  div[style*="position:fixed"][style*="bottom:1.5rem"][style*="right:1.5rem"] button,
+  div[style*="position:fixed"][style*="bottom:1.5rem"][style*="right:1.5rem"] a{padding:.4rem .75rem!important;font-size:.6rem!important}
+  button[style*="position:fixed"][style*="bottom:24px"][style*="right:24px"]{bottom:12px!important;right:12px!important;padding:7px 12px!important;font-size:11px!important}
+}
+</style>
 </head>
 <body>
 
