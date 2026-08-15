@@ -1,6 +1,6 @@
 const REDIS = process.env.UPSTASH_REDIS_REST_URL;
 const TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
-const ADMIN_PIN = process.env.ADMIN_PIN || '2029';
+const ADMIN_PIN = process.env.ADMIN_PIN;
 
 async function redis(cmd, ...args) {
   const r = await fetch(`${REDIS}/${cmd}/${args.map(encodeURIComponent).join('/')}`, {
@@ -23,7 +23,8 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Pin');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const pin = req.headers['x-admin-pin'] || (req.query && req.query.pin);
+  if (!ADMIN_PIN) return res.status(503).json({ error: 'Admin access is not configured' });
+  const pin = req.headers['x-admin-pin'];
   if (pin !== ADMIN_PIN) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
