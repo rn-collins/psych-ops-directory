@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Psych Ops Directory — curated operational infrastructure for the psychedelic ecosystem. Vetted legal, financial, clinical, and support vendors across 22 categories.">
+<meta name="description" content="Psych Ops Directory — curated operational infrastructure and a browser-based provider due-diligence workspace for the psychedelic ecosystem.">
 <meta property="og:title" content="Psych Ops Directory — Operational Infrastructure for the Psychedelic Ecosystem">
 <meta property="og:description" content="Curated directory of vetted vendors and organizations serving the psychedelic ecosystem — legal, banking, CROs, facilitator training, harm reduction, and more.">
 <meta property="og:type" content="website">
@@ -199,7 +199,16 @@ footer{background:var(--ink);border-top:1px solid #2E4A3E;padding:1.5rem 2rem}
 .analytics-inner{max-width:1200px;margin:0 auto;display:flex;gap:2rem;flex-wrap:wrap}
 .analytics-item{font-family:'DM Mono',monospace;font-size:.65rem;color:#3D6055;letter-spacing:.05em}
 .analytics-item span{color:#5DBFA0}
-.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}</style>
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.truth-note{max-width:1200px;margin:0 auto 2rem;padding:1rem 1.2rem;border:1px solid var(--border);background:#fffdf8;color:#3A4A42;font-size:.82rem;line-height:1.6;border-radius:6px}
+.dd-intro{font-size:.86rem;line-height:1.6;color:#3A4A42;margin-bottom:1rem}
+.dd-provider{border:1px solid var(--border);border-radius:6px;margin-bottom:1rem;overflow:hidden}
+.dd-provider h3{font-family:'Syne',sans-serif;font-size:.9rem;margin:0;padding:.8rem 1rem;background:var(--bg)}
+.dd-row{display:grid;grid-template-columns:minmax(160px,1fr) 170px 2fr;gap:.7rem;align-items:center;padding:.65rem 1rem;border-top:1px solid var(--border);font-size:.78rem}
+.dd-row select,.dd-row input{width:100%;box-sizing:border-box;padding:.45rem;border:1px solid var(--border);border-radius:4px;background:#fff}
+.dd-actions{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
+@media(max-width:700px){.dd-row{grid-template-columns:1fr}.dd-row select,.dd-row input{min-height:40px}}
+</style>
 </head>
 <body>
 
@@ -209,7 +218,7 @@ footer{background:var(--ink);border-top:1px solid #2E4A3E;padding:1.5rem 2rem}
     <div class="brand">
       <div class="brand-eyebrow">Aloha AI Consulting · Operational Intelligence</div>
       <h1 class="brand-name">PSYCH OPS</h1>
-      <div class="brand-sub">Operational Infrastructure Directory · Psychedelic Ecosystem · v5 · reviewed August 2026</div>
+      <div class="brand-sub">Operational Infrastructure Directory · v6 · reviewed 14 August 2026</div>
     </div>
     <div class="header-stats">
       <div class="stat-row">
@@ -234,6 +243,7 @@ footer{background:var(--ink);border-top:1px solid #2E4A3E;padding:1.5rem 2rem}
     <button class="search-btn" onclick="runSearch()" aria-label="Run search">Search</button>
     <button class="act-btn" id="compare-toggle" onclick="toggleCompareMode()" aria-label="Toggle compare mode">Compare</button>
     <button class="act-btn" onclick="exportCSV()" aria-label="Export current results as CSV">Export CSV</button>
+    <button class="act-btn" onclick="openDiligence()" aria-label="Open provider due diligence workspace">Due Diligence</button>
     <button class="act-btn" onclick="openModal('submit-modal')" aria-label="Submit a new listing for review">Submit Listing</button>
     <button class="clear-btn" onclick="clearSearch()" aria-label="Clear search">Clear</button>
   </div>
@@ -252,12 +262,13 @@ footer{background:var(--ink);border-top:1px solid #2E4A3E;padding:1.5rem 2rem}
 
 <main id="main-content" role="main">
   <div class="legend">
-    <div class="leg"><div class="leg-dot t1"></div>Tier 1 — verified named psychedelic relationship</div>
+    <div class="leg"><div class="leg-dot t1"></div>Tier 1 — documented named relationship</div>
     <div class="leg"><div class="leg-dot t2"></div>Tier 2 — verifiable field presence</div>
     <div class="leg"><div class="leg-dot t3"></div>Tier 3 — candidate / verify independently</div>
   </div>
   <h2 class="sr-only">Directory listings</h2><div class="results-meta" id="results-meta" aria-live="polite" aria-atomic="true"></div>
   <div class="grid" id="grid"></div>
+<section class="truth-note" aria-label="Evidence limitations"><strong>What the tiers mean:</strong> tiers describe public evidence of field presence—not licensure, quality, safety, financial stability, or endorsement. Verify current status with the relevant regulator and the provider before relying on a listing. Directory edition: 14 August 2026.</section>
 </main>
 
 <div class="contact-fab">
@@ -287,6 +298,22 @@ footer{background:var(--ink);border-top:1px solid #2E4A3E;padding:1.5rem 2rem}
   <div class="compare-actions">
     <button class="compare-clear" onclick="clearCompare()">Clear</button>
     <button class="compare-go" onclick="openCompareModal()">Compare →</button>
+  </div>
+</div>
+
+<!-- Provider Due Diligence Workspace -->
+<div class="modal-overlay" id="diligence-modal">
+  <div class="modal" style="max-width:980px">
+    <div class="modal-head"><div class="modal-title">Provider Due Diligence Workspace</div><button class="modal-close" onclick="closeModal('diligence-modal')" aria-label="Close due diligence workspace">✕</button></div>
+    <div class="modal-body">
+      <p class="dd-intro">Use this private, browser-only worksheet to investigate up to three selected providers. A directory tier is a starting signal, not a provider approval. Notes remain on this device unless you export them.</p>
+      <div id="diligence-grid"></div>
+      <div class="dd-actions">
+        <button class="form-submit" onclick="exportDiligence()">Export Markdown packet</button>
+        <button class="compare-clear" onclick="clearDiligence()">Clear saved diligence</button>
+      </div>
+      <p class="dd-intro" style="margin-top:1rem">Suggested primary checks: relevant state regulator/license lookup; state business registry; disciplinary or complaint records where public; professional insurance; conflicts and independence; privacy/security terms; references; scope, pricing, and termination terms.</p>
+    </div>
   </div>
 </div>
 
@@ -396,7 +423,7 @@ footer{background:var(--ink);border-top:1px solid #2E4A3E;padding:1.5rem 2rem}
     </div>
     <div>
       <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:var(--ink);margin-bottom:.5rem">How listings are vetted</h2>
-      <p style="font-size:.9rem;color:#3A4A42;line-height:1.7">Every listing is scored into one of three tiers, shown throughout the directory (see legend above the grid). <strong>Tier 1</strong> means a verified, named psychedelic relationship — a specific client, case, license, or publication the editor could confirm. <strong>Tier 2</strong> means verifiable field presence without a confirmed named relationship — the organization operates in adjacent space (cannabis law, behavioral health staffing) with credible but less direct psychedelic-specific evidence. <strong>Tier 3</strong> is a candidate listing that should be independently verified before you rely on it — usually because a firm's psychedelic practice has changed hands, a founder has departed, or public information is thin. Editor notes flag anything time-sensitive, such as attorneys who moved firms or practices that have substantially wound down.</p>
+      <p style="font-size:.9rem;color:#3A4A42;line-height:1.7">Every listing is scored into one of three tiers, shown throughout the directory (see legend above the grid). <strong>Tier 1</strong> means a documented, named psychedelic relationship — a specific public client, case, license, or publication documented during editorial review. <strong>Tier 2</strong> means verifiable field presence without a confirmed named relationship — the organization operates in adjacent space (cannabis law, behavioral health staffing) with credible but less direct psychedelic-specific evidence. <strong>Tier 3</strong> is a candidate listing that should be independently verified before you rely on it — usually because a firm's psychedelic practice has changed hands, a founder has departed, or public information is thin. Editor notes flag anything time-sensitive, such as attorneys who moved firms or practices that have substantially wound down.</p>
     </div>
     <div>
       <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:var(--ink);margin-bottom:.5rem">How to use it</h2>
@@ -658,6 +685,31 @@ function exportCSV(){
   a.click();
   track("export");
 }
+
+
+const DD_CHECKS=[
+ ["legal","Legal entity & good standing"],
+ ["license","Licensure / jurisdiction"],
+ ["insurance","Insurance & coverage"],
+ ["conflicts","Conflicts / independence"],
+ ["privacy","Privacy & security"],
+ ["references","References / complaints"],
+ ["scope","Scope, price & exit terms"]
+];
+function ddKey(){return"psychops:dd:v1";}
+function ddLoad(){try{return JSON.parse(localStorage.getItem(ddKey())||"{}")}catch(e){return{}}}
+function ddSave(){const state=ddLoad();document.querySelectorAll("[data-dd]").forEach(el=>{const p=el.dataset.provider,c=el.dataset.check,k=el.dataset.kind;state[p]=state[p]||{};state[p][c]=state[p][c]||{};state[p][c][k]=el.value});localStorage.setItem(ddKey(),JSON.stringify(state))}
+function openDiligence(){
+ const ids=compareSet.size?Array.from(compareSet):[];
+ if(!ids.length){alert("Select one to three listings with Compare first.");return}
+ const state=ddLoad(),items=ids.map(id=>DATA.find(d=>d.id===id)).filter(Boolean);
+ document.getElementById("diligence-grid").innerHTML=items.map(d=>'<div class="dd-provider"><h3>'+esc(d.name)+' · '+esc(d.tier||"Tier not assigned")+'</h3>'+DD_CHECKS.map(c=>{const x=((state[d.id]||{})[c[0]]||{});return '<div class="dd-row"><strong>'+c[1]+'</strong><select data-dd data-provider="'+d.id+'" data-check="'+c[0]+'" data-kind="status"><option'+(x.status==="Not checked"?" selected":"")+'>Not checked</option><option'+(x.status==="Evidence found"?" selected":"")+'>Evidence found</option><option'+(x.status==="Needs follow-up"?" selected":"")+'>Needs follow-up</option><option'+(x.status==="Disqualifying concern"?" selected":"")+'>Disqualifying concern</option></select><input data-dd data-provider="'+d.id+'" data-check="'+c[0]+'" data-kind="note" value="'+esc(x.note||"")+'" placeholder="Source URL, date, or follow-up note"></div>'}).join("")+'</div>').join("");
+ document.querySelectorAll("[data-dd]").forEach(el=>el.addEventListener("change",ddSave));
+ openModal("diligence-modal");track("diligence_open");
+}
+function esc(v){return String(v||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function exportDiligence(){ddSave();const state=ddLoad(),ids=compareSet.size?Array.from(compareSet):Object.keys(state);let md="# Psych Ops provider due diligence\n\nExported "+new Date().toISOString()+"\n\nDirectory tiers describe public field evidence, not approval or licensure. Verify independently.\n\n";ids.forEach(id=>{const d=DATA.find(x=>x.id===id);if(!d)return;md+="## "+d.name+"\n\n- Directory tier: "+(d.tier||"—")+"\n- Website: "+(d.url||"—")+"\n";DD_CHECKS.forEach(c=>{const x=((state[id]||{})[c[0]]||{});md+="- "+c[1]+": "+(x.status||"Not checked")+(x.note?" — "+x.note:"")+"\n"});md+="\n"});const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([md],{type:"text/markdown"}));a.download="psych-ops-due-diligence-"+new Date().toISOString().slice(0,10)+".md";a.click();URL.revokeObjectURL(a.href);track("diligence_export")}
+function clearDiligence(){if(confirm("Clear saved due-diligence notes on this device?")){localStorage.removeItem(ddKey());openDiligence()}}
 
 function openFlagModal(id){
   currentFlagId=id;
