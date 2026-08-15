@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/admin
+Disallow: /api/seed
+Disallow: /api/listings-static
+Sitemap: https://psych-ops-directory.vercel.app/sitemap.xml
