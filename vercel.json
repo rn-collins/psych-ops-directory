@@ -10,11 +10,11 @@
     },
     {
       "src": "/privacy",
-      "dest": "/public/privacy.html"
+      "dest": "/public/index.html"
     },
     {
       "src": "/corrections",
-      "dest": "/public/corrections.html"
+      "dest": "/public/index.html"
     },
     {
       "src": "/verification.json",
