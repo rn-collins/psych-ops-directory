@@ -39,7 +39,7 @@ export default async function handler(req, res) {
     ]);
 
     const listings = parseRedisVal(listingsRaw.result) || [];
-    const subIds = listingsRaw.result ? (queueRaw.result || []) : [];
+    const subIds = queueRaw.result || [];
     const flagIds = flagsQueueRaw.result || [];
 
     // Fetch submissions
