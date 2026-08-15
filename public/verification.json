@@ -16,8 +16,8 @@
   "apiUiCorpusAligned": true,
   "recordReviewStatusVisible": true,
   "unverifiedPolicy": "TIER 3 and REF records are explicitly labeled unverified and require independent verification.",
-  "correctionRemovalPath": "/corrections",
-  "privacyPolicy": "/privacy",
+  "correctionRemovalPath": "/api/corrections",
+  "privacyPolicy": "/api/privacy",
   "apis": [
     "/api/analytics",
     "/api/listings",
