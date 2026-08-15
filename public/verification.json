@@ -1,0 +1,32 @@
+{
+  "buildId": "RN-B014",
+  "repairCard": "RR-014",
+  "canonical": "https://psych-ops-directory.vercel.app",
+  "verifiedAt": "2026-08-15",
+  "edition": "v7 August 2026",
+  "listingCount": 177,
+  "categoryCount": 23,
+  "tierCounts": {
+    "TIER 1": 133,
+    "TIER 2": 36,
+    "TIER 3": 7,
+    "REF": 1
+  },
+  "listingIdsUnique": true,
+  "apiUiCorpusAligned": true,
+  "recordReviewStatusVisible": true,
+  "unverifiedPolicy": "TIER 3 and REF records are explicitly labeled unverified and require independent verification.",
+  "correctionRemovalPath": "/corrections",
+  "privacyPolicy": "/privacy",
+  "apis": [
+    "/api/analytics",
+    "/api/listings",
+    "/api/track",
+    "/api/flag",
+    "/api/submit",
+    "/api/subscribe",
+    "/api/admin",
+    "/api/seed",
+    "/api/listings-static"
+  ]
+}
