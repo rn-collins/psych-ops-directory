@@ -9,14 +9,6 @@
       "dest": "/public/admin.html"
     },
     {
-      "src": "/privacy",
-      "dest": "/public/index.html"
-    },
-    {
-      "src": "/corrections",
-      "dest": "/public/index.html"
-    },
-    {
       "src": "/verification.json",
       "dest": "/public/verification.json"
     },
