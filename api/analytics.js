@@ -17,7 +17,8 @@ function parseRedisVal(result) {
 }
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
+  res.setHeader('Access-Control-Allow-Origin', 'https://psych-ops-directory.vercel.app');
   res.setHeader('Cache-Control', 'public, s-maxage=120');
 
   try {
@@ -55,6 +56,7 @@ export default async function handler(req, res) {
       exports: exports_
     });
   } catch (e) {
-    return res.status(500).json({ ok: false, error: e.message });
+    console.error(e);
+    return res.status(503).json({ ok: false, error: 'Analytics unavailable' });
   }
 }
