@@ -28,5 +28,8 @@
     "/api/admin",
     "/api/seed",
     "/api/listings-static"
-  ]
+  ],
+  "subscriptionConsentRequired": true,
+  "subscriptionDeliveryReportedSeparately": true,
+  "adminQueueIndependentOfListingStore": true
 }
