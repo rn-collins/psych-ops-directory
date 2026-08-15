@@ -1,6 +1,6 @@
 const REDIS = process.env.UPSTASH_REDIS_REST_URL;
 const TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
-const ADMIN_PIN = process.env.ADMIN_PIN || '2029';
+const ADMIN_PIN = process.env.ADMIN_PIN;
 
 async function redis(cmd, ...args) {
   const r = await fetch(`${REDIS}/${cmd}/${args.map(encodeURIComponent).join('/')}`, {
@@ -16,14 +16,13 @@ const SEED_URL = 'https://psych-ops-directory.vercel.app/api/listings-static';
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
 
-  const pin = req.headers['x-admin-pin'] || (req.query && req.query.pin);
+  if (!ADMIN_PIN) return res.status(503).json({ error: 'Admin access is not configured' });
+  const pin = req.headers['x-admin-pin'];
   if (pin !== ADMIN_PIN) {
-    return res.status(401).json({ error: 'Unauthorized — pass ?pin=YOUR_PIN' });
+    return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  if (req.method !== 'POST' && req.method !== 'GET') {
-    return res.status(405).json({ error: 'Use GET or POST' });
-  }
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
     // Check if already seeded
@@ -42,7 +41,7 @@ export default async function handler(req, res) {
     }
 
     // Fetch seed data from static endpoint
-    const r = await fetch(`${SEED_URL}?pin=${pin}`);
+    const r = await fetch(SEED_URL, { headers: { 'X-Admin-Pin': pin } });
     const data = await r.json();
 
     if (!data.listings || !Array.isArray(data.listings)) {

@@ -1,49 +1,8 @@
 const REDIS = process.env.UPSTASH_REDIS_REST_URL;
 const TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
 const SLACK = process.env.SLACK_WEBHOOK_URL;
-
-async function redis(cmd, ...args) {
-  const r = await fetch(`${REDIS}/${cmd}/${args.map(encodeURIComponent).join('/')}`, {
-    headers: { Authorization: `Bearer ${TOKEN}` }
-  });
-  return r.json();
-}
-
-export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
-
-  const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-  const { name, cat, sub, svc, price, url, contact, note } = body || {};
-
-  if (!name || !cat || !svc) {
-    return res.status(400).json({ error: 'name, cat, and svc are required' });
-  }
-
-  const ts = Date.now();
-  const id = `SUB-${ts}`;
-  const submission = {
-    id, name, cat, sub: sub || '', svc, price: price || '',
-    url: url || '', contact: contact || '', note: note || '',
-    submittedAt: new Date(ts).toISOString(),
-    status: 'pending'
-  };
-
-  await redis('SET', `psydir:submissions:${id}`, JSON.stringify(submission));
-  await redis('LPUSH', 'psydir:submissions:queue', id);
-
-  if (SLACK) {
-    await fetch(SLACK, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        text: `📬 *New Psych Ops Directory Submission*\n*Name:* ${name}\n*Category:* ${cat}\n*Contact:* ${contact || 'not provided'}\n*Review at:* https://psych-ops-directory.vercel.app/admin`
-      })
-    });
-  }
-
-  return res.status(200).json({ ok: true, id });
-}
+async function redis(cmd,...args){if(!REDIS||!TOKEN)throw new Error("Storage is not configured");const r=await fetch(`${REDIS}/${cmd}/${args.map(encodeURIComponent).join("/")}`,{headers:{Authorization:`Bearer ${TOKEN}`}});if(!r.ok)throw new Error("Storage request failed");return r.json()}
+function bodyOf(req){try{return typeof req.body==="string"?JSON.parse(req.body):req.body||{}}catch{return null}}
+function clean(v,max){return typeof v==="string"?v.trim().slice(0,max):""}
+function emailOk(v){return !v||(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)&&v.length<=254)}
+export default async function handler(req,res){res.setHeader("Access-Control-Allow-Origin","https://psych-ops-directory.vercel.app");res.setHeader("Access-Control-Allow-Methods","POST, OPTIONS");res.setHeader("Access-Control-Allow-Headers","Content-Type");if(req.method==="OPTIONS")return res.status(204).end();if(req.method!=="POST")return res.status(405).json({error:"Method not allowed"});const b=bodyOf(req);if(!b)return res.status(400).json({error:"Invalid JSON"});const name=clean(b.name,180),cat=clean(b.cat,100),svc=clean(b.svc,3000),contact=clean(b.contact,254);if(!name||!cat||!svc)return res.status(400).json({error:"name, cat, and svc are required"});if(!emailOk(contact))return res.status(400).json({error:"Valid contact email required"});const ts=Date.now(),id=`SUB-${ts}`,item={id,name,cat,svc,sub:clean(b.sub,300),price:clean(b.price,200),url:clean(b.url,500),contact,note:clean(b.note,1500),submittedAt:new Date(ts).toISOString(),status:"pending"};try{await redis("SET",`psydir:submissions:${id}`,JSON.stringify(item));await redis("LPUSH","psydir:submissions:queue",id);if(SLACK){const sr=await fetch(SLACK,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text:`📬 Directory submission: ${name}\nReview: https://psych-ops-directory.vercel.app/admin`})});if(!sr.ok)console.error("Slack notification failed",sr.status)}return res.status(200).json({ok:true,id})}catch(e){console.error(e);return res.status(503).json({ok:false,error:"Submission queue unavailable"})}}
