@@ -14,7 +14,9 @@ async function redis(cmd, ...args) {
 const SEED_URL = 'https://psych-ops-directory.vercel.app/api/listings-static';
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', 'https://psych-ops-directory.vercel.app');
+  res.setHeader('Vary', 'Origin');
+  res.setHeader('Cache-Control', 'no-store');
 
   if (!ADMIN_PIN) return res.status(503).json({ error: 'Admin access is not configured' });
   const pin = req.headers['x-admin-pin'];
