@@ -1,8 +1,1 @@
-{
-  "name": "psych-ops-directory",
-  "version": "2.1.0",
-  "type": "module",
-  "engines": {
-    "node": "24.x"
-  }
-}
+{"name":"psych-ops-directory","version":"8.0.0","private":true,"type":"module","scripts":{"test":"node --test","build":"node --test"}}
