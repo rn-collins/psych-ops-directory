@@ -1,1 +1,32 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Privacy · Psychedelic Operations Directory</title><link rel="stylesheet" href="/styles.css"><link rel="canonical" href="https://psych-ops-directory.vercel.app/privacy"><meta name="description" content="This directory has no tracking, analytics, accounts, or submission endpoints. Search and filtering happen in your browser."><link rel="icon" href="/favicon.svg"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta property="og:title" content="Privacy — Psychedelic Operations Directory"><meta property="og:description" content="This directory has no tracking, analytics, accounts, or submission endpoints. Search and filtering happen in your browser."><meta property="og:type" content="article"><meta property="og:url" content="https://psych-ops-directory.vercel.app/privacy"><meta property="og:image" content="https://psych-ops-directory.vercel.app/og-image.png"><meta name="twitter:card" content="summary_large_image"></head><body><main><h1>Privacy</h1><p>This release has no submission, flagging, subscription, tracking, analytics, administrative, or seed endpoints. Search and filtering occur in your browser and are not sent back to the site. No account or local diligence notes are created.</p><p>Vercel processes ordinary request metadata to host and secure the public site under its own privacy practices.</p><p><a href="/">Return to directory</a></p></main></body></html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Privacy · Psychedelic Operations Directory</title><meta name="description" content="No tracking, analytics, accounts, cookies or submission endpoints. Search and filtering happen in your browser and are never sent back."><link rel="canonical" href="https://psych-ops-directory.vercel.app/privacy"><link rel="icon" href="/favicon.svg"><link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta property="og:title" content="Privacy · Psychedelic Operations Directory"><meta property="og:description" content="No tracking, analytics, accounts, cookies or submission endpoints. Search and filtering happen in your browser and are never sent back."><meta property="og:type" content="website"><meta property="og:url" content="https://psych-ops-directory.vercel.app/privacy"><meta property="og:image" content="https://psych-ops-directory.vercel.app/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Psychedelic Operations Directory"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Privacy · Psychedelic Operations Directory"><meta name="twitter:image" content="https://psych-ops-directory.vercel.app/og-image.png"><link rel="stylesheet" href="/styles.css"></head><body>
+<a class="skip" href="#main">Skip to content</a>
+<header>
+<p class="eyebrow">Psychedelic Operations Directory</p>
+<h1>Privacy</h1>
+<p class="deck">Everything this page claims is checkable in your browser’s network tab, which is the only reason a privacy page is worth reading.</p>
+<nav aria-label="Site"><a href="/">Directory</a><a href="/taxonomy">Taxonomy</a><a href="/methodology">Methodology</a><a href="/corrections">Corrections</a><a href="/privacy">Privacy</a></nav>
+</header>
+<main id="main" class="prose" tabindex="-1">
+
+<h2>What is not here</h2>
+<p>No analytics, no tracking pixels, no cookies, no advertising, no third-party scripts, no fonts or images from another host, no account system, and no submission, flagging, subscription, administrative or seed endpoint. There is nothing to opt out of because nothing is collected. Earlier versions of this project had submission and administrative routes; they were removed rather than disabled, and the repository’s own test suite fails if any of them reappears.</p>
+
+<h2>What the page loads</h2>
+<p>Three files, all from this origin: the page, one stylesheet, one script. The Content-Security-Policy served with every response confines scripts, styles and network connections to this origin, blocks framing, blocks inline script and inline style, and forbids form submission to anywhere. A future mistake in the markup therefore cannot quietly begin sending data elsewhere.</p>
+
+<h2>What happens when you search</h2>
+<p>Everything. All 175 records are already in the page you downloaded; searching, filtering and sorting run entirely in your browser against markup that is already there. No request is made as you type, and there is no endpoint that could receive one. Filter state is written into the address bar so that a view can be linked and restored — which means a link you share carries whatever you typed, visibly, before you send it.</p>
+<p>Nothing is stored on your device. There is no local storage, no session storage and no saved state; closing the tab leaves nothing behind.</p>
+
+<h2>Links out</h2>
+<p>Opening an organisation’s website sends an ordinary request to that third party under its own privacy practices. This site sets a <code>strict-origin-when-cross-origin</code> referrer policy, so those hosts learn that a visitor arrived from this origin but not which record was being read.</p>
+
+<h2>What the host sees</h2>
+<p>The site is served by Vercel, which processes ordinary request metadata — IP address, user agent, requested path, timestamp — to deliver and secure the site under its own privacy practices. That is true of any hosted website and is outside this site’s control. Nothing beyond it is recorded.</p>
+
+<h2>About the organisations listed</h2>
+<p>Every record describes a public organisation, not a private individual, and every published field was drawn from public presence in the field. Where a survey descriptor named an individual, that descriptor is withheld under the rule described in the <a href="/methodology">methodology</a>. Organisations that believe a record is wrong should read <a href="/corrections">Corrections</a>.</p>
+
+</main>
+<footer><p>Entries were last reviewed 20 August 2026; destination links were last checked 29 August 2026. Pricing, credentials, rankings and detailed service claims are withheld until claim-level provenance is public.</p><p><a href="/">Directory</a> · <a href="/taxonomy">Taxonomy</a> · <a href="/methodology">Methodology</a> · <a href="/corrections">Corrections</a> · <a href="/privacy">Privacy</a></p></footer>
+</body></html>

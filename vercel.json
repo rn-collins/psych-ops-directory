@@ -2,6 +2,10 @@
   "outputDirectory": "public",
   "rewrites": [
     {
+      "source": "/taxonomy",
+      "destination": "/taxonomy.html"
+    },
+    {
       "source": "/privacy",
       "destination": "/privacy.html"
     },

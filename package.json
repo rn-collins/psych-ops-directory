@@ -1,1 +1,11 @@
-{"name":"psych-ops-directory","version":"8.0.0","private":true,"type":"module","scripts":{"test":"node --test","build":"node --test"}}
+{
+  "name": "psych-ops-directory",
+  "version": "8.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "render": "node scripts/render.mjs",
+    "test": "node --test",
+    "build": "node --test"
+  }
+}
