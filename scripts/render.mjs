@@ -9,7 +9,7 @@
 
 import { writeFile } from "node:fs/promises";
 import { LISTINGS, REVIEWED_AT } from "../lib/listings-static.js";
-import { CATEGORIES, GROUPS, DEFECTS, descriptorFor } from "../lib/taxonomy.js";
+import { CATEGORIES, GROUPS, DEFECTS, descriptorFor, VERIFIED } from "../lib/taxonomy.js";
 import { LINK_OVERRIDES } from "../lib/link-overrides.js";
 
 const LINKS_CHECKED_AT = "2026-08-29";
@@ -35,6 +35,8 @@ for (const entry of LISTINGS) {
     descriptor: descriptor.text,
     descriptorWithheld: descriptor.withheld,
     descriptorReason: descriptor.reason,
+    redactedClauses: descriptor.redactedClauses || 0,
+    verified: VERIFIED[String(entry.id || "")] || null,
     url: override ? "" : url,
     recordedUrl: url,
     linkStatus: override ? override.status : (url ? "ok" : String(entry.linkStatus || "none-recorded")),
@@ -57,12 +59,14 @@ const neverRecorded = unlinked.filter((r) => r.linkStatus === "none-recorded");
 const didNotAnswer = unlinked.length - overridden.length - neverRecorded.length;
 const unlinkedProse = `${unlinked.length} of ${RECORDS.length} entries are shown without a link: ${didNotAnswer} whose domain did not resolve or served no working HTTPS site when links were checked on ${longDate(LINKS_CHECKED_AT)}, ${overridden.length === 1 ? "one whose certificate had expired at the moment of checking" : `${overridden.length} whose certificates had expired at the moment of checking`}, and ${neverRecorded.length === 1 ? "one that never had a website recorded" : `${neverRecorded.length} that never had a website recorded`}.`;
 const withheldCount = RECORDS.filter((r) => r.descriptorWithheld).length;
+const redactedCount = RECORDS.filter((r) => r.redactedClauses > 0).length;
+const verifiedCount = RECORDS.filter((r) => r.verified).length;
 const categoryNames = Object.keys(counts).sort();
 
 const head = (title, description, canonical) => `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><meta name="description" content="${esc(description)}"><link rel="canonical" href="${esc(canonical)}"><link rel="icon" href="/favicon.svg"><link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(description)}"><meta property="og:type" content="website"><meta property="og:url" content="${esc(canonical)}"><meta property="og:image" content="https://psych-ops-directory.vercel.app/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Psychedelic Operations Directory"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${esc(title)}"><meta name="twitter:image" content="https://psych-ops-directory.vercel.app/og-image.png"><link rel="stylesheet" href="/styles.css">`;
 
 const siteNav = `<nav aria-label="Site"><a href="/">Directory</a><a href="/taxonomy">Taxonomy</a><a href="/methodology">Methodology</a><a href="/corrections">Corrections</a><a href="/privacy">Privacy</a></nav>`;
-const foot = `<footer><p>Entries were last reviewed ${esc(longDate(REVIEWED_AT))}; destination links were last checked ${esc(longDate(LINKS_CHECKED_AT))}. Pricing, credentials, rankings and detailed service claims are withheld until claim-level provenance is public.</p><p><a href="/">Directory</a> · <a href="/taxonomy">Taxonomy</a> · <a href="/methodology">Methodology</a> · <a href="/corrections">Corrections</a> · <a href="/privacy">Privacy</a></p></footer>`;
+const foot = `<footer><p>Entries were last reviewed ${esc(longDate(REVIEWED_AT))}; destination links were last checked ${esc(longDate(LINKS_CHECKED_AT))}. Pricing, credentials, rankings and detailed service claims are withheld until claim-level provenance is public; ${verifiedCount} records carry a claim checked at its issuing source, dated on the record.</p><p><a href="/">Directory</a> · <a href="/taxonomy">Taxonomy</a> · <a href="/methodology">Methodology</a> · <a href="/corrections">Corrections</a> · <a href="/privacy">Privacy</a></p></footer>`;
 
 function recordMarkup(record) {
   const text = [record.name, record.category, record.descriptor].join(" ").toLowerCase();
@@ -70,8 +74,11 @@ function recordMarkup(record) {
 <div class="record-top"><h3>${esc(record.name)}</h3><a class="permalink" href="#${esc(slug(record.id))}" aria-label="Permanent link to ${esc(record.name)}">#</a></div>
 <p class="meta"><a class="cat-link" href="/taxonomy#${esc(slug(record.category))}">${esc(record.category)}</a> · record ${esc(record.id)} · reviewed ${esc(longDate(record.reviewedAt))}</p>
 ${record.descriptorWithheld
-    ? `<p class="withheld">Scope descriptor withheld — ${esc(record.descriptorReason)}.</p>`
-    : `<p class="descriptor">${esc(record.descriptor)} <span class="qualifier">(scope as recorded in the source survey; not independently verified)</span></p>`}
+    ? `<p class="withheld">Scope descriptor withheld: ${esc(record.descriptorReason)}.</p>`
+    : `<p class="descriptor">${esc(record.descriptor)}${record.redactedClauses ? ` <span class="qualifier">(${record.redactedClauses === 1 ? "one further clause" : `${record.redactedClauses} further clauses`} redacted under the claim rule)</span>` : ""}</p>`}
+${record.verified
+    ? `<p class="verified"><strong>Checked at the source.</strong> ${esc(record.verified.text)} <a href="${esc(record.verified.source)}" target="_blank" rel="noopener noreferrer">${esc(new URL(record.verified.source).hostname)}</a>, read ${esc(longDate(record.verified.checkedAt))}.</p>`
+    : ""}
 ${record.url
     ? `<p><a class="visit" href="${esc(record.url)}" target="_blank" rel="noopener noreferrer" aria-label="Open the website for ${esc(record.name)} (opens in a new tab)">Open website</a> <span class="host">${esc(new URL(record.url).hostname)}</span></p>`
     : record.override
@@ -91,14 +98,16 @@ const index = `${head(
 <header>
 <p class="eyebrow">Read-only editorial snapshot</p>
 <h1>Psychedelic Operations Directory</h1>
-<p class="deck">${RECORDS.length} organisations, in ${categoryNames.length} categories, recorded once and published unchanged. This index maps public field presence. Inclusion is not vetting, endorsement, licensure verification, or a finding about quality, safety, financial stability, or legal compliance.</p>
+<p class="deck">${RECORDS.length} organisations, in ${categoryNames.length} categories. Read every scope line below as the survey&rsquo;s own wording, not as a finding of this index: it is stated here once so it need not be repeated on ${RECORDS.length} cards. Being listed means an organisation was present in the field when the survey ran. It is not vetting, endorsement, licensure verification, or a finding about quality, safety, financial stability or legal compliance.</p>
 ${siteNav}
 </header>
 <main id="main" tabindex="-1">
 
 <section class="brief" aria-labelledby="brief-title">
 <h2 id="brief-title">What this is, in one paragraph</h2>
-<p>A survey of the psychedelic operations field recorded ${LISTINGS.length} entries. After removing duplicate names, ${RECORDS.length} remain. The survey did not record a public source for each individual claim it captured, so this release publishes only what can be stated without one: the organisation’s name, the category it was filed under, a scope descriptor where that descriptor makes no claim, and a destination link where one answered. Everything else — pricing, credentials, rankings, acquisitions, promotional characterisations — is withheld. The two things that make this more than a list of names are on separate pages: <a href="/taxonomy">the taxonomy</a>, which says what each category means and what it excludes, and <a href="/methodology">the method</a>, which says exactly what was and was not checked.</p>
+<p>A survey of the psychedelic operations field recorded ${LISTINGS.length} entries. After removing duplicate names, ${RECORDS.length} remain. The survey did not attach a public source to each claim it captured, so a claim is published here only when it has one: pricing, credentials, rankings, acquisition values and promotional framing are held back until they do.</p>
+<p>That rule used to be applied to a whole descriptor at once, which meant one unsourced word deleted the entire scope line. It now applies clause by clause. ${redactedCount} records have had part of a descriptor removed and the rest published; ${withheldCount} have nothing left to publish and say so. Where a withheld claim was worth having, the way to get it back is to go and check it: ${verifiedCount} records now carry a line read directly from the body that issues the claim — Colorado&rsquo;s approved training-programme list, and Oregon&rsquo;s own account of what its licensee directory is. Two of those checks contradict what the survey recorded.</p>
+<p>The two things that make this more than a list of names are on separate pages: <a href="/taxonomy">the taxonomy</a>, which says what each category means and what it excludes, and <a href="/methodology">the method</a>, which says exactly what was and was not checked.</p>
 </section>
 
 <section class="composition" aria-labelledby="composition-title">
@@ -207,7 +216,10 @@ ${siteNav}
 
 <h2>The descriptor rule</h2>
 <p>The one field that required judgement is the short scope descriptor. Some are purely descriptive — “Oregon psilocybin licensing; cannabis and emerging industries” makes no claim beyond stating a practice area. Others carry exactly the material withheld everywhere else, in miniature: certifications, superlatives, transaction values, rankings.</p>
-<p>Rather than judge them one at a time, a single mechanical rule is applied. A descriptor is withheld if it contains a currency or percentage figure, a scaled number, a superlative, a ranking reference, or a claim of approval, accreditation, certification, licensure, acquisition or exit. ${RECORDS.length - withheldCount} descriptors pass and are published, labelled as recorded in the survey and not independently verified. ${withheldCount} are withheld, and each withheld record says so on its face rather than simply showing a blank.</p>
+<p>Rather than judge them one at a time, a single mechanical rule is applied. A clause is removed if it contains a currency or percentage figure, a scaled number, a superlative, a ranking reference, or a claim of approval, accreditation, certification, licensure, acquisition or exit.</p>
+<p>The rule first shipped at record level: any descriptor containing any such clause was dropped whole. That was wrong in a way worth naming, because it destroyed sound information to suppress unsound information sitting next to it. &ldquo;OHA/HECC-licensed &mdash; 9-month/205-hr, Ashland OR&rdquo; became a blank; the programme length and the town had nothing wrong with them. Forty-nine of ${RECORDS.length} records were emptied that way, and because each printed the same notice explaining why, that notice became the single most repeated sentence on the site &mdash; which is its own kind of failure to inform.</p>
+<p>The rule is now applied clause by clause. A clause survives if it makes no claim and carries at least two words, a lone fragment being closer to damage than description. ${RECORDS.length - withheldCount} records publish a descriptor, ${redactedCount} of them with part removed and the removal counted on the card. ${withheldCount} have no clause that survives and say so.</p>
+<p>Suppression is the cheap half. A claim can also leave the withheld pile by being checked, and ${verifiedCount} have been: the facilitator-training approvals against Colorado&rsquo;s published list of approved natural-medicine training programmes, and the two state registry records against the registries themselves. Each such record names the source and the date it was read. Two checks came back against the survey: one training programme recorded as Colorado-approved is not on Colorado&rsquo;s list, and the Oregon licensee directory recorded here as an authoritative full list is described by Oregon as neither comprehensive nor usable for licence verification. Both now say so on the record. Nothing else in this release has been verified this way, and a claim without such a line has not been checked.</p>
 <p>The rule is deliberately blunt and it over-withholds. A descriptor that mentions a genuine state approval is suppressed alongside a descriptor that merely boasts, because the index has no source for either and cannot tell them apart. Where a claim of state approval matters — facilitator training is the obvious case — the state holds that fact and publishes it, and that is where a reader should go.</p>
 
 <h2>Deduplication</h2>
